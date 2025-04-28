@@ -26,34 +26,17 @@
   <video id="player" autoplay="autoplay" muted="muted" playsinline="playsinline"></video>
 
   <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js" type="text/javascript"></script>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script type="text/javascript">
     var urlParams = new URLSearchParams(window.location.search);
     var videoUrl = urlParams.get('link');
 
     if (videoUrl) {
       var player = document.getElementById('player');
-      
-      // Kiểm tra nếu trình duyệt hỗ trợ HLS
-      if (Hls.isSupported()) {
-        var hls = new Hls();
-        hls.loadSource(videoUrl);  // Tải video m3u8
-        hls.attachMedia(player);  // Gắn video vào player
-        hls.on(Hls.Events.MANIFEST_PARSED, function() {
-          player.play();  // Phát video khi tải xong
-        });
-      }
-      // Nếu trình duyệt không hỗ trợ HLS, sử dụng phương thức mặc định (chỉ hỗ trợ trong các trình duyệt hỗ trợ)
-      else if (player.canPlayType('application/x-mpegURL')) {
-        player.src = videoUrl;  // Phát video trực tiếp nếu trình duyệt hỗ trợ
-        player.addEventListener('canplay', function() {
-          player.play();  // Phát video khi có thể
-        });
-      } else {
-        document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:20px;'>Trình duyệt không hỗ trợ video HLS!</h2>";
-      }
+      var source = document.createElement('source');
+      source.src = videoUrl;
+      source.type = 'video/mp4';
+      player.appendChild(source);
 
-      // Khởi tạo FluidPlayer (nếu muốn)
       fluidPlayer('player', {
         layoutControls: {
           fillToContainer: true,
